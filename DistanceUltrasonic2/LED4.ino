@@ -8,7 +8,7 @@
  *      a1z09.2.0.0.DLCbWI&_u=i27m1eabfb06
  * @author Jiang Yu-Kuan <yukuan.jiang@gmail.com>
  * @date 2016/08/18 (initial version)
- * @date 2016/08/18 (last revision)
+ * @date 2016/08/19 (last revision)
  * @version 1.0
  */
 #include <assert.h>
@@ -17,25 +17,12 @@
 // 4-bit LED Digital Tube Module
 //-----------------------------------------------------------------------------
 
-static uint8_t _sclkPin;    // SHCP: shift register clock input
-static uint8_t _rclkPin;    // STCP: storage register clock input
-static uint8_t _dioPin;     // DS: serial data input
-
-
-/** Initializes the display relative pins as output mode. */
-static void LED4_initPin(void)
-{
-    pinMode(_sclkPin, OUTPUT);
-    pinMode(_rclkPin, OUTPUT);
-    pinMode(_dioPin, OUTPUT);
-}
-
-
 /** Clears the display. */
 void LED4_clear(void)
 {
-    SIPO_shiftByte(0xFF); // digit part;    1:off, 0:on
-    SIPO_shiftByte(0);    // position part; 0:off, 1:on
+                            // common anode LEDs
+    SIPO_shiftByte(0xFF);   // digit part;    1:off, 0:on
+    SIPO_shiftByte(0);      // position part; 0:off, 1:on
     SIPO_store();
 }
 
@@ -43,11 +30,7 @@ void LED4_clear(void)
 /** Initializes the display. */
 void LED4_init(uint8_t sclkPin, uint8_t rclkPin, uint8_t dioPin)
 {
-    _sclkPin = sclkPin;
-    _rclkPin = rclkPin;
-    _dioPin = dioPin;
-
-    LED4_initPin();
+    SIPO_init(sclkPin, rclkPin, dioPin);    // Shift Clock, Store Clock, Serial Data
     LED4_clear();
 }
 
@@ -123,15 +106,33 @@ static void LED4_showDigit(int pos, int digit)
 // 74HC595 -- an 8-bit serial-in/serial or parallel-out shift register
 //-----------------------------------------------------------------------------
 
+static uint8_t _shcpPin;    // SHCP: shift register clock input
+static uint8_t _stcpPin;    // STCP: storage register clock input
+static uint8_t _dsPin;      // DS: serial data input
+
+
+/** Initializes 74HC595. */
+static void SIPO_init(uint8_t shcpPin, uint8_t stcpPin, uint8_t dsPin)
+{
+    _shcpPin = shcpPin;
+    _stcpPin = stcpPin;
+    _dsPin = dsPin;
+
+    pinMode(_shcpPin, OUTPUT);
+    pinMode(_stcpPin, OUTPUT);
+    pinMode(_dsPin, OUTPUT);
+}
+
+
 /** Shifts one bit. */
 static void SIPO_shiftBit(bool bit)
 {
     if (bit != 0)
-        digitalWrite(_dioPin, HIGH);
+        digitalWrite(_dsPin, HIGH);
     else
-        digitalWrite(_dioPin, LOW);
-    digitalWrite(_sclkPin, LOW);
-    digitalWrite(_sclkPin, HIGH);
+        digitalWrite(_dsPin, LOW);
+    digitalWrite(_shcpPin, LOW);
+    digitalWrite(_shcpPin, HIGH);
 }
 
 
@@ -150,8 +151,8 @@ static void SIPO_shiftByte(uint8_t bitmap)
 /** Stores/Loads to 8-bit storage registers. */
 static void SIPO_store(void)
 {
-    digitalWrite(_rclkPin, LOW);
-    digitalWrite(_rclkPin, HIGH);
+    digitalWrite(_stcpPin, LOW);
+    digitalWrite(_stcpPin, HIGH);
 }
 
 //-----------------------------------------------------------------------------
