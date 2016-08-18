@@ -1,11 +1,11 @@
 /**
  * @file DistanceUltrasonic2.ino
  *  This program shows an ultrasonic measured distance on a 4-bit LED Digital
- *  Tube.
+ *  Tube. This program is for testing HC-SR04: a ultrasonic distance sensor.
  *
  * @author Jiang Yu-Kuan <yukuan.jiang@gmail.com>
  * @date 2016/08/18 (initial version)
- * @date 2016/08/18 (last revision)
+ * @date 2016/08/19 (last revision)
  * @version 1.0
  */
 
