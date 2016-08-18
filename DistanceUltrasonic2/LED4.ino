@@ -1,8 +1,8 @@
 /**
  * @file LED4.ino
- * Driver-without-delay of a 4-bit LED Digital Tube Module (four digit LEDs
- * connects to two 74HC595). 74HC595 is an 8-bit serial-in/serial or parallel-
- * out shift register with a storage register and 3-state outputs.
+ * Driver-without-delay of a 4-bit LED Digital Tube Module (four common-anode
+ * digit LEDs connects to two 74HC595). 74HC595 is an 8-bit serial-in/serial or
+ * parallel-out shift register with a storage register and 3-state outputs.
  *
  * @see https://world.taobao.com/item/527643034307.htm?fromSite=main&spm=
  *      a1z09.2.0.0.DLCbWI&_u=i27m1eabfb06
@@ -13,6 +13,9 @@
  */
 #include <assert.h>
 
+//-----------------------------------------------------------------------------
+// 4-bit LED Digital Tube Module
+//-----------------------------------------------------------------------------
 
 static uint8_t _sclkPin;    // SHCP: shift register clock input
 static uint8_t _rclkPin;    // STCP: storage register clock input
@@ -31,12 +34,9 @@ static void LED4_initPin(void)
 /** Clears the display. */
 void LED4_clear(void)
 {
-    shiftOut(0xFF); // digit part;    1:off, 0:on
-    shiftOut(0);    // position part; 0:off, 1:on
-
-    // load to 8-bit storage registers
-    digitalWrite(_rclkPin, LOW);
-    digitalWrite(_rclkPin, HIGH);
+    SIPO_shiftByte(0xFF); // digit part;    1:off, 0:on
+    SIPO_shiftByte(0);    // position part; 0:off, 1:on
+    SIPO_store();
 }
 
 
@@ -104,6 +104,8 @@ static void LED4_showDigit(int pos, int digit)
         //// A     b     C     d     E     F       -
         //0x8C, 0x43, 0xC6, 0xA1, 0x86, 0xFF, 0xBF
     };
+
+    // common anode LEDs
     const static uint8_t pos2LED[] = {
         1, 2, 4, 8
     };
@@ -111,30 +113,46 @@ static void LED4_showDigit(int pos, int digit)
     assert ((0 <= pos) && (pos <= 3));
     assert ((0 <= digit) && (digit <=9));
 
-    shiftOut(digit2LED[digit]);
-    shiftOut(pos2LED[pos]);
-
-    // load to 8-bit storage registers
-    digitalWrite(_rclkPin, LOW);
-    digitalWrite(_rclkPin, HIGH);
+    SIPO_shiftByte(digit2LED[digit]);
+    SIPO_shiftByte(pos2LED[pos]);
+    SIPO_store();
 }
 
 
-/** Shift out the shift registers (74HC595). */
-static void shiftOut(uint8_t bitmap)
+//-----------------------------------------------------------------------------
+// 74HC595 -- an 8-bit serial-in/serial or parallel-out shift register
+//-----------------------------------------------------------------------------
+
+/** Shifts one bit. */
+static void SIPO_shiftBit(bool bit)
+{
+    if (bit != 0)
+        digitalWrite(_dioPin, HIGH);
+    else
+        digitalWrite(_dioPin, LOW);
+    digitalWrite(_sclkPin, LOW);
+    digitalWrite(_sclkPin, HIGH);
+}
+
+
+/** Shifts 8 bits. */
+static void SIPO_shiftByte(uint8_t bitmap)
 {
     uint8_t i;
 
     for (i=8; i>=1; i--) {
-        if (bitmap & 0x80)
-            digitalWrite(_dioPin, HIGH);
-        else
-            digitalWrite(_dioPin, LOW);
+        SIPO_shiftBit((bitmap & 0x80) == 0x80);
         bitmap <<= 1;
-
-        // shift one bit
-        digitalWrite(_sclkPin, LOW);
-        digitalWrite(_sclkPin, HIGH);
     }
 }
+
+
+/** Stores/Loads to 8-bit storage registers. */
+static void SIPO_store(void)
+{
+    digitalWrite(_rclkPin, LOW);
+    digitalWrite(_rclkPin, HIGH);
+}
+
+//-----------------------------------------------------------------------------
 
