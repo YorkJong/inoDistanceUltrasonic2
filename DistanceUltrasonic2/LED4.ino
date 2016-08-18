@@ -27,7 +27,11 @@ void LED4_clear(void)
 }
 
 
-/** Initializes the display. */
+/** Initializes the display.
+ * @param sclkPin shift register clock input (SHCP)
+ * @param rclkPin storage register clock input (SRCP)
+ * @param dioPin serial data input (DS)
+ */
 void LED4_init(uint8_t sclkPin, uint8_t rclkPin, uint8_t dioPin)
 {
     SIPO_init(sclkPin, rclkPin, dioPin);    // Shift Clock, Store Clock, Serial Data
