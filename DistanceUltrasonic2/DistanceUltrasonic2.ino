@@ -9,9 +9,10 @@
  * @version 1.0
  */
 
-#define USE_PULSE_MODE
-
 typedef enum {
+    PIN_Trig = 2,
+    PIN_Echo = 3,
+
     PIN_SCLK = 10,
     PIN_RCLK = 11,
     PIN_DIO = 12
@@ -20,15 +21,26 @@ typedef enum {
 
 void setup()
 {
+    HCSR04_init(PIN_Trig, PIN_Echo);
     LED4_init(PIN_SCLK, PIN_RCLK, PIN_DIO);
 }
 
 
 void loop()
 {
-    uint16_t len_mm = 1234;
+    uint16_t len_mm;
 
-    LED4_step(len_mm);
+    if (!HCSR04_measure(&len_mm) || !HCSR04_isValidDistance(len_mm)) {
+        unsigned long endMillis = millis() + 1000;
+        LED4_clear();
+        while (millis() < endMillis)
+            ;
+        return;
+    }
+
+    unsigned long endMillis = millis() + 1000;
+    while (millis() < endMillis)
+        LED4_step(len_mm);
 }
 
 
