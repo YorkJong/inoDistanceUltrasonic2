@@ -4,8 +4,9 @@
  * digit LEDs connects to two 74HC595). 74HC595 is an 8-bit serial-in/serial or
  * parallel-out shift register with a storage register and 3-state outputs.
  *
- * @see https://world.taobao.com/item/527643034307.htm?fromSite=main&spm=
- *      a1z09.2.0.0.DLCbWI&_u=i27m1eabfb06
+ * @see https://world.taobao.com/item/
+ *      527643034307.htm?fromSite=main&spm=a1z09.2.0.0.DLCbWI&_u=i27m1eabfb06
+ * @see https://www.arduino.cc/en/Tutorial/ShiftOut
  * @author Jiang Yu-Kuan <yukuan.jiang@gmail.com>
  * @date 2016/08/18 (initial version)
  * @date 2016/08/19 (last revision)
