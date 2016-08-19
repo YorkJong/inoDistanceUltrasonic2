@@ -15,7 +15,7 @@
 
 
 //-----------------------------------------------------------------------------
-// 4 digit display -- a 4-bit LED Digital Tube Module
+// 4 digit display -- a 4-bit LED Digital Tube Module (common-anode LEDs)
 //-----------------------------------------------------------------------------
 
 /** Clears the display. */
@@ -84,37 +84,33 @@ void Digits_step(uint16_t number)
  */
 static void Digits_showDigit(int pos, int digit)
 {
-    // Layout off 7-segment LEDs:
+    assert ((0 <= pos) && (pos <= 3));
+    assert ((0 <= digit) && (digit <=9));
+
+    // Layout of LED segments of a digit:
     //       a
     //       -
     //     f| |b
     //       - g
     //     e| |c
     //       -
-    //       d  .dp
-    //
-    // Map from LEDs to bits:
-    //     LED: dp g f e d c b a
-    //     BIT:  7 6 5 4 3 2 1 0
-
-    // lookup the bitmap of a common-anode LEDs from a digit
-    const static uint8_t digit2LED[] = {
-        // 0     1     2     3     4     5     6     7     8     9
-        0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0x80, 0x90,
-        //// A     b     C     d     E     F       -
-        //0x8C, 0x43, 0xC6, 0xA1, 0x86, 0xFF, 0xBF
+    //       d  .dp(h)
+    const static uint8_t digit2seg[] = {
+        //            hgfe dcba
+        0x3F,   // 0: 0011 1111
+        0x06,   // 1: 0000 0110
+        0x5B,   // 2: 0101 1011
+        0x4F,   // 3: 0100 1111
+        0x66,   // 4: 0110 0110
+        0x6D,   // 5: 0110 1101
+        0x7D,   // 6: 0111 1101
+        0x07,   // 7: 0000 0111
+        0x7F,   // 8: 0111 1111
+        0x6F,   // 9: 0110 1111
     };
 
-    // lookup the bitmap of a common-anode LEDs from its position
-    const static uint8_t pos2LED[] = {
-        1, 2, 4, 8
-    };
-
-    assert ((0 <= pos) && (pos <= 3));
-    assert ((0 <= digit) && (digit <=9));
-
-    SIPO_shiftByte(digit2LED[digit]);
-    SIPO_shiftByte(pos2LED[pos]);
+    SIPO_shiftByte(~digit2seg[digit]);  // ~ is for common-anode LEDs
+    SIPO_shiftByte(1 << pos);
     SIPO_store();
 }
 
