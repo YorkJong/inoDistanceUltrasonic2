@@ -34,7 +34,7 @@ void Digits_clear(void)
  */
 void Digits_init(uint8_t sclkPin, uint8_t rclkPin, uint8_t dioPin)
 {
-    SIPO_init(sclkPin, rclkPin, dioPin);    // Shift Clock, Store Clock, Serial Data
+    SIPO_init(sclkPin, rclkPin, dioPin);
     Digits_clear();
 }
 
@@ -115,7 +115,11 @@ static uint8_t _stcpPin;    // STCP: storage register clock input
 static uint8_t _dsPin;      // DS: serial data input
 
 
-/** Initializes 74HC595. */
+/** Initializes 74HC595.
+ * @param shcpPin shift register clock input
+ * @param stcpPin storage register clock input
+ * @param dsPin serial data input
+ */
 static void SIPO_init(uint8_t shcpPin, uint8_t stcpPin, uint8_t dsPin)
 {
     _shcpPin = shcpPin;
@@ -128,7 +132,9 @@ static void SIPO_init(uint8_t shcpPin, uint8_t stcpPin, uint8_t dsPin)
 }
 
 
-/** Shifts one bit. */
+/** Shifts one bit.
+ * @param bit the bit to shift
+ */
 static void SIPO_shiftBit(bool bit)
 {
     if (bit != 0)
@@ -140,7 +146,9 @@ static void SIPO_shiftBit(bool bit)
 }
 
 
-/** Shifts 8 bits. */
+/** Shifts 8 bits.
+ * @param bitmap a map of byte-width bits
+ */
 static void SIPO_shiftByte(uint8_t bitmap)
 {
     uint8_t i;
