@@ -22,7 +22,7 @@ typedef enum {
 void setup()
 {
     HCSR04_init(PIN_Trig, PIN_Echo);
-    LED4_init(PIN_SCLK, PIN_RCLK, PIN_DIO);
+    Digits_init(PIN_SCLK, PIN_RCLK, PIN_DIO);
 }
 
 
@@ -32,7 +32,7 @@ void loop()
 
     if (!HCSR04_measure(&len_mm) || !HCSR04_isValidDistance(len_mm)) {
         unsigned long endMillis = millis() + 1000;
-        LED4_clear();
+        Digits_clear();
         while (millis() < endMillis)
             ;
         return;
@@ -40,7 +40,7 @@ void loop()
 
     unsigned long endMillis = millis() + 1000;
     while (millis() < endMillis)
-        LED4_step(len_mm);
+        Digits_step(len_mm);
 }
 
 

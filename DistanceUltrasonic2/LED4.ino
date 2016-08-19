@@ -1,5 +1,5 @@
 /**
- * @file LED4.ino
+ * @file Digits.ino
  * Driver-without-delay of a 4-bit LED Digital Tube Module (four common-anode
  * digit LEDs connects to two 74HC595). 74HC595 is an 8-bit serial-in/serial or
  * parallel-out shift register with a storage register and 3-state outputs.
@@ -18,7 +18,7 @@
 //-----------------------------------------------------------------------------
 
 /** Clears the display. */
-void LED4_clear(void)
+void Digits_clear(void)
 {
                             // common anode LEDs
     SIPO_shiftByte(0xFF);   // digit part;    1:off, 0:on
@@ -32,10 +32,10 @@ void LED4_clear(void)
  * @param rclkPin storage register clock input (SRCP)
  * @param dioPin serial data input (DS)
  */
-void LED4_init(uint8_t sclkPin, uint8_t rclkPin, uint8_t dioPin)
+void Digits_init(uint8_t sclkPin, uint8_t rclkPin, uint8_t dioPin)
 {
     SIPO_init(sclkPin, rclkPin, dioPin);    // Shift Clock, Store Clock, Serial Data
-    LED4_clear();
+    Digits_clear();
 }
 
 
@@ -44,7 +44,7 @@ void LED4_init(uint8_t sclkPin, uint8_t rclkPin, uint8_t dioPin)
  * interval is controlled witout calling delay function.
  * @param number a 4-digit number to show
  */
-void LED4_step(uint16_t number)
+void Digits_step(uint16_t number)
 {
     enum {
         INTERVAL = 4    // milli-seconds; for 3.3V, 8MHz Arduino
@@ -55,7 +55,7 @@ void LED4_step(uint16_t number)
     static unsigned long endMillis = 0;
 
     if (number > 9999) {
-        LED4_clear();
+        Digits_clear();
         return;
     }
 
@@ -70,7 +70,7 @@ void LED4_step(uint16_t number)
         endMillis = currMillis + INTERVAL;
 
         --pos;
-        LED4_showDigit(pos, remainder / divisor);
+        Digits_showDigit(pos, remainder / divisor);
         remainder %= divisor;
         divisor /= 10;
     }
@@ -81,7 +81,7 @@ void LED4_step(uint16_t number)
  * @param pos the position (0..3)
  * @param digit the digit (0..9)
  */
-static void LED4_showDigit(int pos, int digit)
+static void Digits_showDigit(int pos, int digit)
 {
     // BIT:  7 6 5 4 3 2 1 0
     // LED: dp g f e d c b a
