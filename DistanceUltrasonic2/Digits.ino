@@ -13,8 +13,9 @@
  */
 #include <assert.h>
 
+
 //-----------------------------------------------------------------------------
-// 4-bit LED Digital Tube Module
+// 4 digit display -- a 4-bit LED Digital Tube Module
 //-----------------------------------------------------------------------------
 
 /** Clears the display. */
