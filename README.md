@@ -8,5 +8,7 @@ I replaced some parts for simplifying wiring.
 * An Arduino Pro mini (3.3V, 8MHz)
 * An HC-SR04 ultrasonic distance sensor (replacing US100)
 * A 4-bit LED Digital Tube Module to display the result
-* A 4.5V (1.5V*3) battery pack
+* A mini breadboard (170 holes)
+* Male to male solderless flexible breadboard jumper cable wires
+* A 4.5V (1.5Vx3) battery pack
 
