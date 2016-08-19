@@ -83,8 +83,20 @@ void Digits_step(uint16_t number)
  */
 static void Digits_showDigit(int pos, int digit)
 {
-    // BIT:  7 6 5 4 3 2 1 0
-    // LED: dp g f e d c b a
+    // Layout off 7-segment LEDs:
+    //       a
+    //       -
+    //     f| |b
+    //       - g
+    //     e| |c
+    //       -
+    //       d  .dp
+    //
+    // Map from LEDs to bits:
+    //     LED: dp g f e d c b a
+    //     BIT:  7 6 5 4 3 2 1 0
+
+    // lookup the bitmap of a common-anode LEDs from a digit
     const static uint8_t digit2LED[] = {
         // 0     1     2     3     4     5     6     7     8     9
         0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0x80, 0x90,
@@ -92,7 +104,7 @@ static void Digits_showDigit(int pos, int digit)
         //0x8C, 0x43, 0xC6, 0xA1, 0x86, 0xFF, 0xBF
     };
 
-    // common anode LEDs
+    // lookup the bitmap of a common-anode LEDs from its position
     const static uint8_t pos2LED[] = {
         1, 2, 4, 8
     };
