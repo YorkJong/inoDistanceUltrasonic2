@@ -27,9 +27,9 @@ void HCSR04_init(uint8_t trigPin, uint8_t echoPin)
 }
 
 
-/** Measure a distance.
+/** Measures a distance.
  * @param[out] len_mm the measured distance.
- * @retval true true in the case of success to get the distance;
+ * @retval true in the case of success to get the distance;
  * @retval fasle otherwise.
  */
 bool HCSR04_measure(uint16_t *len_mm)
