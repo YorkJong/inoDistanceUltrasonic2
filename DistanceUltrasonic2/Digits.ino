@@ -9,7 +9,7 @@
  * @see https://www.arduino.cc/en/Tutorial/ShiftOut
  * @author Jiang Yu-Kuan <yukuan.jiang@gmail.com>
  * @date 2016/08/18 (initial version)
- * @date 2016/08/19 (last revision)
+ * @date 2016/08/25 (last revision)
  * @version 1.0
  */
 #include <assert.h>
@@ -42,7 +42,7 @@ void Digits_init(uint8_t sclkPin, uint8_t rclkPin, uint8_t dioPin)
 
 
 /** Steps the 4 digit 7 segment display. This function show at most one digit
- * at once and show 4 digits in turn. Each show is with a 5ms interval. The
+ * at once and show 4 digits in turn. Each show is with a 4ms interval. The
  * interval is controlled witout calling delay function.
  * @param number a 4-digit number to show
  */
@@ -94,8 +94,8 @@ static void Digits_showDigit(int pos, int digit)
     //     f| |b
     //       - g
     //     e| |c
-    //       -
-    //       d  .dp(h)
+    //       -   .dp(h)
+    //       d
     const static uint8_t digit2seg[] = {
         //            hgfe dcba
         0x3F,   // 0: 0011 1111
