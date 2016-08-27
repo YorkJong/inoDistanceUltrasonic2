@@ -12,4 +12,6 @@ I replaced some parts for simplifying wiring.
 * Male to male solderless flexible breadboard jumper cable wires
 * A 4.5V (1.5Vx3) battery pack
 
-![DistanceUltrasonic2.jpg](https://bitbucket.org/repo/6L4z4b/images/2742901479-DistanceUltrasonic2.jpg)
+### Photos ###
+
+![DistanceUltrasonic2](/docs/DistanceUltrasonic2.jpg)
