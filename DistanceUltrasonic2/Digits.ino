@@ -9,7 +9,7 @@
  * @see https://www.arduino.cc/en/Tutorial/ShiftOut
  * @author Jiang Yu-Kuan <yukuan.jiang@gmail.com>
  * @date 2016/08/18 (initial version)
- * @date 2016/08/26 (last revision)
+ * @date 2016/08/31 (last revision)
  * @version 2.0
  */
 #include <assert.h>
@@ -21,10 +21,6 @@
 //-----------------------------------------------------------------------------
 // 4 digit display -- a 4-bit LED Digital Tube Module (common-anode LEDs)
 //-----------------------------------------------------------------------------
-
-static void Digits_showDigit(uint8_t pos, uint8_t digit, bool withDot=false);
-static void Digits_showChar(uint8_t pos, char ch, bool withDot=false);
-
 
 enum {
     TOTAL_POSITIONS = 4
@@ -75,18 +71,11 @@ static bool isEqual(float a, float b)
  */
 void Digits_step(float num)
 {
-    enum {
-        INTERVAL = 4    // milli-seconds; for 3.3V, 8MHz Arduino
-    };
-    static unsigned long endMillis = 0;
     static float num_bak = 9999.;
-    static uint8_t pos = 0;
-    static uint8_t i, n;
     static char buf[] = "0.123";
 
-    if (!isEqual(num_bak, num) || (pos == 0)) {
+    if (!isEqual(num_bak, num)) {
         num_bak = num;
-        pos = TOTAL_POSITIONS;
 
         if (isnan(num)) {
             snprintf(buf, sizeof(buf), "ERR. ");    // error
@@ -103,10 +92,35 @@ void Digits_step(float num)
             else if (num < 1000)
                 dtostrf(num, 5, 1, buf);    // fmt: "%5.1f"
         }
-        n = strlen(buf);
-        i = 0;
     }
 
+    Digits_step((const char*)buf);
+}
+
+
+
+/** Steps/Updates the 4-digit display with a C string. This function show at
+ * most one character at once and show 4 digits in turn. Each show is with a
+ * 4ms interval. The interval is controlled witout calling delay function.
+ * @param buf the buffer to store the C string (zero terminated).
+ */
+void Digits_step(const char buf[])
+{
+    static uint8_t pos = 0;
+    static uint8_t i, n;
+
+    if (pos == 0) {
+        pos = TOTAL_POSITIONS;
+        i = 0;
+
+        n = strlen(buf);
+        assert (n <= TOTAL_POSITIONS*2);
+    }
+
+    enum {
+        INTERVAL = 4    // milli-seconds; for 3.3V, 8MHz Arduino
+    };
+    static unsigned long endMillis = 0;
     unsigned long currMillis = millis();
     if (currMillis >= endMillis) {
         endMillis = currMillis + INTERVAL;
