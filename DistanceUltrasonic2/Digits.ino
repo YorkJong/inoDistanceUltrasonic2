@@ -9,7 +9,7 @@
  * @see https://www.arduino.cc/en/Tutorial/ShiftOut
  * @author Jiang Yu-Kuan <yukuan.jiang@gmail.com>
  * @date 2016/08/18 (initial version)
- * @date 2016/08/31 (last revision)
+ * @date 2016/09/08 (last revision)
  * @version 2.0
  */
 #include <assert.h>
@@ -278,31 +278,12 @@ static void SIPO_init(uint8_t shcpPin, uint8_t stcpPin, uint8_t dsPin)
 }
 
 
-/** Shifts one bit.
- * @param bit the bit to shift
- */
-static void SIPO_shiftBit(bool bit)
-{
-    if (bit != 0)
-        digitalWrite(_dsPin, HIGH);
-    else
-        digitalWrite(_dsPin, LOW);
-    digitalWrite(_shcpPin, LOW);
-    digitalWrite(_shcpPin, HIGH);
-}
-
-
 /** Shifts 8 bits.
  * @param bitmap a map of byte-width bits
  */
 static void SIPO_shiftByte(uint8_t bitmap)
 {
-    uint8_t i;
-
-    for (i=8; i>=1; i--) {
-        SIPO_shiftBit((bitmap & 0x80) == 0x80);
-        bitmap <<= 1;
-    }
+    shiftOut(_dsPin, _shcpPin, MSBFIRST, bitmap);
 }
 
 
